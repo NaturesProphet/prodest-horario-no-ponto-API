@@ -19,12 +19,19 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "commit": "git-cz",
-    "release": "standard-version"
+    "release": "standard-version",
+    "mongodb": "docker run --name mongodb-srv -d -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=rootpass -e MONGO_INITDB_DATABASE=banco -p 8081:8081 -p 27017:27017 -p 27018:27018 -p 27019:27019 mongo",
+    "mongodb:persistent": "docker run --name mongodb-srv -d -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=admin123 -e MONGO_INITDB_DATABASE=realtime -v /DOCKER-VOLUMES/mongo:/data/db -v /DOCKER-VOLUMES/mongo/configdb:/data/configdb  -p 27017:27017 mongo",
+    "shell:mongodb": "docker exec -i -t mongodb-srv /bin/bash",
+    "stop:mongodb": "docker stop mongodb-srv && docker rm mongodb-srv",
+    "stop:all": "docker stop $(docker ps -q -a) && docker rm $(docker ps -q -a)"
   },
   "dependencies": {
     "@nestjs/common": "^6.0.0",
     "@nestjs/core": "^6.0.0",
+    "@nestjs/mongoose": "^6.0.0",
     "@nestjs/platform-express": "^6.0.0",
+    "mongoose": "^5.4.19",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
     "rxjs": "^6.3.3"

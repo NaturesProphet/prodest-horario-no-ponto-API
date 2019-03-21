@@ -13,6 +13,15 @@ API de consulta de horarios de ônibus nos pontos baseada em histórico das ulti
 $ npm install
 ```
 
+## Variáveis de ambiente
+```bash
+MONGO_HOST            # Servidor do MongoDB
+MONGO_PORT            # Porta do mongoDB. Default: 27017
+MONGO_USER            # Usuario do mongoDB
+MONGO_PASSWORD        # Senha do mongoBD
+MONGO_SCHEMA          # Nome do banco no mongo
+```
+
 ## Running the app
 
 ```bash

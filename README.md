@@ -22,6 +22,56 @@ MONGO_PASSWORD        # Senha do mongoBD
 MONGO_SCHEMA          # Nome do banco no mongo
 ```
 
+## Exemplo de requisição
+```
+POST /horario
+{
+"rotulo": "11069",
+"coordenadas": 
+	[
+		{
+			"longitude"	: -40.32262,
+			"latitude": -20.350101
+		},
+		{
+			"longitude"	: -40.3230,
+			"latitude": -20.350101
+		}
+	]
+}
+```
+
+## Exemplo de resposta
+```
+[
+    {
+        "Horario": 1553469168000,
+        "coordenadaMaisProxima": [
+            -40.322700000000005,
+            -20.350196666666665
+        ],
+        "coordenadaPesquisada": [
+            -40.32262,
+            -20.350101
+        ],
+        "rotulo": "11069"
+    },
+    {
+        "Horario": 1553469138000,
+        "coordenadaMaisProxima": [
+            -40.32296,
+            -20.350413333333336
+        ],
+        "coordenadaPesquisada": [
+            -40.323,
+            -20.350101
+        ],
+        "rotulo": "11069"
+    }
+]
+```
+
+
 ## Running the app
 
 ```bash

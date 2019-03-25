@@ -1,6 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Veiculo } from './interfaces/veiculo.interface';
+import { LocalDto } from './dto/local.dto';
+import { HorarioInterface } from './interfaces/horarios.interface';
 
 @Injectable()
 export class HorarioService {
@@ -12,29 +14,56 @@ export class HorarioService {
    * @param rotulo numero do veículo
    * @param local coordenadas geográficas do local, no formato [LONG,LAT]
    */
-  async getHorarios ( rotulo: string, local: number[] ): Promise<Veiculo[]> {
+  async getHorarios ( rotulo: string, local: LocalDto[] ): Promise<HorarioInterface[]> {
 
-    //lista os horarios em que o onibus esteve em um raio de 25 metros do ponto dado
-    const veiculos: Veiculo[] = await this.Model.find(
+    let listaHorarios: HorarioInterface[] = new Array();
 
-      {
-        ROTULO: rotulo,
-        LOCALIZACAO:
+    for ( let i: number = 0; i < local.length; i++ ) {
+
+      let veiculos = new Array();
+      let queryLocation = [ local[ i ].longitude, local[ i ].latitude ];
+      veiculos = await this.Model.find(
+
+
         {
-          $near:
+          ROTULO: rotulo,
+          LOCALIZACAO:
           {
-            $geometry: { type: "Point", coordinates: local },
-            $minDistance: 0,
-            $maxDistance: 25
+            $near:
+            {
+              $geometry: { type: "Point", coordinates: queryLocation },
+              $minDistance: 0,
+              $maxDistance: 50
+            }
           }
+        },
+        {
+          DATAHORA: 1,
+          _id: 0,
+          LOCALIZACAO: 1
         }
-      },
-      {
-        DATAHORA: 1, //filtra para pegar apenas o horario
-        _id: 0
+      ).exec();
+
+      if ( veiculos[ i ] != undefined ) {
+        let horario: HorarioInterface = {
+          Horario: veiculos[ i ].DATAHORA,
+          coordenadaMaisProxima: veiculos[ i ].LOCALIZACAO,
+          coordenadaPesquisada: queryLocation,
+          rotulo: rotulo
+        }
+        listaHorarios.push( horario );
+      } else {
+        let horario: HorarioInterface = {
+          Horario: 'Veículo nao encontrado nas proximidades informadas',
+          coordenadaMaisProxima: [],
+          coordenadaPesquisada: queryLocation,
+          rotulo: rotulo
+        }
+        listaHorarios.push( horario );
       }
-    ).exec();
-    //console.log( JSON.stringify( veiculos, null, 2 ) )
-    return veiculos;
+
+    }
+    return listaHorarios;
   }
+
 }

@@ -1,0 +1,36 @@
+exemplo de entrada
+{
+rotulo: 1234,
+coordenadas: [
+{lat: -20, lon: -40},
+{lat: -20, lon: -40},
+{lat: -20, lon: -40},
+{lat: -20, lon: -40},
+{lat: -20, lon: -40},
+]
+}
+
+
+
+exemplo de saida
+[
+{
+rotulo: 1234
+coordenada consultada: -20,-40.1
+coordenada mais perto: -20,-40.3
+hora: hh:mm:ss (da geocontrol, acho)
+},
+{
+rotulo: 1234
+coordenada consultada: -20,-40.1
+coordenada mais perto: -20,-40.3
+hora: hh:mm:ss (da geocontrol, acho)
+},
+{
+rotulo: 1234
+coordenada consultada: -20,-40.1
+coordenada mais perto: -20,-40.3
+hora: hh:mm:ss (da geocontrol, acho)
+},
+]
+

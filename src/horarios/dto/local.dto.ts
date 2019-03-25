@@ -1,11 +1,10 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 
-export class HorarioDto {
+export class LocalDto {
 
     @ApiModelProperty()
-    distância: number;
+    longitude: number;
 
     @ApiModelProperty()
-    horario: string;
-
+    latitude: number;
 }

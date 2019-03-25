@@ -1,18 +1,24 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Controller, Res, Post, Body } from '@nestjs/common';
 import { HorarioService } from './horario.service';
-import { Veiculo } from './interfaces/veiculo.interface';
+import { BuscaHorariosDto } from './dto/buscaHorario.dto';
+import { LocalDto } from './dto/local.dto';
+import { HorarioInterface } from './interfaces/horarios.interface';
+
 
 @Controller( 'horario' )
 export class HorarioController {
   constructor( private readonly Service: HorarioService ) { }
 
-  @Get( '/listar/:rotulo/:long/:lat' )
-  async ListarHorarios ( @Param() p, @Res() res ) {
+
+  @Post()
+  async BulkList ( @Body() query: BuscaHorariosDto, @Res() res ) {
+    let rotulo: string = query.rotulo;
+    let coordenadas: LocalDto[] = query.coordenadas;
     try {
-      let horarios = await this.Service.getHorarios( p.rotulo, [ p.long, p.lat ] );
+      let horarios: HorarioInterface[] = await this.Service.getHorarios( rotulo, coordenadas );
       res.status( 200 ).send( horarios );
-    } catch ( e ) {
-      res.status( 400 ).send( `Erro na requisição. ${e.message}` );
+    } catch ( error ) {
+      res.status( 400 ).send( error.message );
     }
   }
 }

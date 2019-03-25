@@ -24,7 +24,7 @@ quality_job:
       - test_job    
   script:
    - npm install
-   - npm run test:cov
+   - npm run test
    - sonar-scanner
 #   - node sonarBreaker.js # Não funciona aqui dentro da prodest
 

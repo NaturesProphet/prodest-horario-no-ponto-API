@@ -17,7 +17,6 @@ test_job:
   script:
      - npm install
      - npm run test
-     - npm run test:e2e
   retry: 2   
 
 quality_job:

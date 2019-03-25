@@ -1,15 +1,11 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { Veiculo } from './interfaces/veiculo.interface';
-import { LocalDto } from './dto/local.dto';
-import { HorarioInterface } from './interfaces/horarios.interface';
+import { Injectable } from '@nestjs/common';
+import { Veiculo } from '../interfaces/veiculo.interface';
+import { LocalDto } from '../dto/local.dto';
+import { HorarioInterface } from '../interfaces/horarios.interface';
 const group = require( 'array-groups' );
 
 @Injectable()
 export class HorarioService {
-  constructor( @Inject( 'VEICULO_MODEL' ) private readonly Model: Model<Veiculo> ) { }
-
-
   /**
    * Método que retorna a lista de horarios em que um veículo esteve próximo a um ponto
    * @param rotulo numero do veículo
@@ -23,27 +19,21 @@ export class HorarioService {
 
       let veiculos = new Array();
       let queryLocation = [ local[ i ].longitude, local[ i ].latitude ];
-      veiculos = await this.Model.find(
-
-
-        {
-          ROTULO: rotulo,
-          LOCALIZACAO:
-          {
-            $near:
-            {
-              $geometry: { type: "Point", coordinates: queryLocation },
-              $minDistance: 0,
-              $maxDistance: 50
-            }
-          }
-        },
-        {
-          DATAHORA: 1,
-          _id: 0,
-          LOCALIZACAO: 1
-        }
-      ).exec();
+      if ( rotulo != "" ) {
+        veiculos =
+          [
+            { "LOCALIZACAO": [ -40.322700000000005, -20.350196666666665 ], "DATAHORA": 1553469168000 },
+            { "LOCALIZACAO": [ -40.32252666666667, -20.349898333333332 ], "DATAHORA": 1553476038000 },
+            { "LOCALIZACAO": [ -40.32252666666667, -20.349898333333332 ], "DATAHORA": 1553476038000 },
+            { "LOCALIZACAO": [ -40.32296, -20.350413333333336 ], "DATAHORA": 1553469138000 }
+          ],
+          [
+            { "LOCALIZACAO": [ -40.322700000000005, -20.350196666666665 ], "DATAHORA": 1553469168000 },
+            { "LOCALIZACAO": [ -40.32296, -20.350413333333336 ], "DATAHORA": 1553469138000 }
+          ];
+      } else {
+        throw new Error( "Bad request" );
+      }
 
       let horario: HorarioInterface = {
         coordenadaPesquisada: queryLocation,

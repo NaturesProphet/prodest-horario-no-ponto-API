@@ -12,9 +12,6 @@ cache:
 test_job:
   image: registry.es.gov.br/espm/infraestrutura/containers/node:10.15.3
   stage: test
-  only:
-    branches:
-      - master
   script:
      - npm install
      - npm run test

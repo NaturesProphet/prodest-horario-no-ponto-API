@@ -10,9 +10,72 @@ coordenadas: [
 ]
 }
 
+saída
+[
+    {
+        rotulo: 1234,
+        coordenada_pesquisada: [
+            -40.323,
+            -20.350101
+        ],
+        horarios: [
+            todos os horários que rotulo passou perto da coordenada
+        ]
+    },
+    {
+        rotulo: 1234,
+        coordenada_pesquisada: [
+            -40.323,
+            -20.350101
+        ],
+        horarios: [
+            todos os horários que rotulo passou perto da coordenada
+        ]
+    },
+    {
+        rotulo: 1234,
+        coordenada_pesquisada: [
+            -40.323,
+            -20.350101
+        ],
+        horarios: [
+            todos os horários que rotulo passou perto da coordenada
+        ]
+    }
+]
 
 
-exemplo de saida
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exemplo de saida  OLD
 [
 {
 rotulo: 1234

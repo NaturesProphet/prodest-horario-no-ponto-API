@@ -44,26 +44,21 @@ export class HorarioService {
         }
       ).exec();
 
-      if ( veiculos[ i ] != undefined ) {
-        let horario: HorarioInterface = {
-          Horario: veiculos[ i ].DATAHORA,
-          coordenadaMaisProxima: veiculos[ i ].LOCALIZACAO,
-          coordenadaPesquisada: queryLocation,
-          rotulo: rotulo
-        }
-        listaHorarios.push( horario );
-      } else {
-        let horario: HorarioInterface = {
-          Horario: 'Veículo nao encontrado nas proximidades informadas',
-          coordenadaMaisProxima: [],
-          coordenadaPesquisada: queryLocation,
-          rotulo: rotulo
-        }
-        listaHorarios.push( horario );
+      let horario: HorarioInterface = {
+        coordenadaPesquisada: queryLocation,
+        rotulo: rotulo,
+        Horarios: []
       }
+
+      for ( let y = 0; y < veiculos.length; y++ ) {
+        if ( veiculos[ y ] != undefined ) {
+          horario.Horarios.push( veiculos[ y ].DATAHORA );
+        }
+      }
+      listaHorarios.push( horario );
+
 
     }
     return listaHorarios;
   }
-
 }

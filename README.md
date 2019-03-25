@@ -45,28 +45,26 @@ POST /horario
 ```
 [
     {
-        "Horario": 1553469168000,
-        "coordenadaMaisProxima": [
-            -40.322700000000005,
-            -20.350196666666665
-        ],
         "coordenadaPesquisada": [
             -40.32262,
             -20.350101
         ],
-        "rotulo": "11069"
+        "rotulo": "11069",
+        "Horarios": [
+            1553469168000,
+            1553469138000
+        ]
     },
     {
-        "Horario": 1553469138000,
-        "coordenadaMaisProxima": [
-            -40.32296,
-            -20.350413333333336
-        ],
         "coordenadaPesquisada": [
             -40.323,
             -20.350101
         ],
-        "rotulo": "11069"
+        "rotulo": "11069",
+        "Horarios": [
+            1553469168000,
+            1553469138000
+        ]
     }
 ]
 ```

@@ -19,10 +19,10 @@ export class HorarioService {
 
     let listaHorarios: HorarioInterface[] = new Array();
 
-    for ( let i: number = 0; i < local.length; i++ ) {
+    for ( let localIndex: number = 0; localIndex < local.length; localIndex++ ) {
 
       let veiculos = new Array();
-      let queryLocation = [ local[ i ].longitude, local[ i ].latitude ];
+      let queryLocation = [ local[ localIndex ].longitude, local[ localIndex ].latitude ];
       veiculos = await this.Model.find(
 
 
@@ -53,14 +53,14 @@ export class HorarioService {
 
 
       let horariosOrganizados = new Array();
-      for ( let y = 0; y < veiculos.length; y++ ) {
-        horariosOrganizados.push( veiculos[ y ].DATAHORA );
+      for ( let veiculosIndex = 0; veiculosIndex < veiculos.length; veiculosIndex++ ) {
+        horariosOrganizados.push( veiculos[ veiculosIndex ].DATAHORA );
       }
 
       let grouped: Array<Veiculo> = group.GroupArray( veiculos, horariosOrganizados, 90000 );
       // 90000 = 1 min e meio -> agrupa os horarios que um veiculo foi visto num ponto neste intervalo
-      for ( let z = 0; z < grouped.length; z++ ) {
-        horario.Horarios.push( grouped[ z ][ 0 ].DATAHORA ); //funciona, mas da pra melhorar com geolib.
+      for ( let groupedArrayIndex = 0; groupedArrayIndex < grouped.length; groupedArrayIndex++ ) {
+        horario.Horarios.push( grouped[ groupedArrayIndex ][ 0 ].DATAHORA ); //funciona, mas da pra melhorar com geolib.
       }
 
       listaHorarios.push( horario );

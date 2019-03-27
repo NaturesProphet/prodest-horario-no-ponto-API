@@ -1,5 +1,5 @@
 export interface HorarioInterface {
     readonly rotulo: string;
-    readonly coordenadaPesquisada: number[];
+    readonly pontoID: number,
     readonly Horarios: number[];
 }

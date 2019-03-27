@@ -29,8 +29,11 @@
     "@nestjs/platform-express": "^6.0.0",
     "@nestjs/swagger": "^3.0.2",
     "array-groups": "^0.1.1",
+    "geolib": "^2.0.24",
     "mongoose": "^5.4.19",
     "reflect-metadata": "^0.1.12",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
     "rimraf": "^2.6.2",
     "rxjs": "^6.3.3"
   },

@@ -1,5 +1,4 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { LocalDto } from './local.dto';
 
 export class BuscaHorariosDto {
 
@@ -7,5 +6,5 @@ export class BuscaHorariosDto {
     rotulo: string;
 
     @ApiModelProperty()
-    coordenadas: LocalDto[];
+    pontos: number[];
 }

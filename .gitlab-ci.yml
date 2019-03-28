@@ -1,6 +1,6 @@
 stages:
   - test
-  - quality
+#  - quality
   - build
   - deploy
 
@@ -17,16 +17,16 @@ test_job:
      - npm run test
   retry: 2   
 
-quality_job:
-  image: registry.es.gov.br/espm/infraestrutura/containers/sonar-scanner:3.3.0.1492
-  stage: quality
-  dependencies:
-      - test_job    
-  script:
-   - npm install
-   - npm run test
-   - sonar-scanner
-#   - node sonarBreaker.js # Não funciona aqui dentro da prodest
+# quality_job:
+#   image: registry.es.gov.br/espm/infraestrutura/containers/sonar-scanner:3.3.0.1492
+#   stage: quality
+#   dependencies:
+#       - test_job    
+#   script:
+#    - npm install
+#    - npm run test
+#    - sonar-scanner
+# #   - node sonarBreaker.js # Não funciona aqui dentro da prodest
 
 build_job:
   stage: build

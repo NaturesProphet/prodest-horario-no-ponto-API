@@ -32,7 +32,9 @@ export class HorarioService {
         let local = [ ponto.longitude, ponto.latitude ];
         this.CoordenadasDosPontos[ Number( ponto.id ) ] = local;
       } );
+
       console.log( `Lista de pontos carregada. Pontos disponíveis: ${listaBruta.length}` );
+
     } catch ( erro ) {
       console.log( `Erro ao tentar recuperar a lista de pontos. ${erro.message}` );
       console.log( 'O programa sairá' );
@@ -57,10 +59,10 @@ export class HorarioService {
     let horarios: HorarioInterface[] = new Array();
 
     // laço 1. Recebe e agrupa os registros por faixa de horario em cada ponto
-    for ( let i = 0; i < pontos.length; i++ ) {
+    for ( let ponto = 0; ponto < pontos.length; ponto++ ) {
 
       // 1. recebe os horarios em que o veiculo esteve próximo ao ponto
-      let veiculosDesagrupados: Veiculo[] = await this.ExecuteQuery( rotulo, pontos[ i ] );
+      let veiculosDesagrupados: Veiculo[] = await this.ExecuteQuery( rotulo, pontos[ ponto ] );
 
       // 2. agrupa os registros em grupos separados por um intervalo de 10 minutos
       let veiculosAgrupadosPorHorario: Veiculo[][] =
@@ -69,14 +71,14 @@ export class HorarioService {
 
       // 3. SUB-laço. seleciona os horarios por proximidade e popula o cabeçalho da resposta
       let horario: HorarioInterface = {
-        pontoID: pontos[ i ],
+        pontoID: pontos[ ponto ],
         rotulo: rotulo,
         Horarios: new Array()
       }
-      for ( let y = 0; y < veiculosAgrupadosPorHorario.length; y++ ) {
+      for ( let faixa = 0; faixa < veiculosAgrupadosPorHorario.length; faixa++ ) {
 
         //3.1. pra cada faixa de horario, seleciona o registro mais próximo do ponto
-        let faixaDeHorario: Veiculo[] = veiculosAgrupadosPorHorario[ y ];
+        let faixaDeHorario: Veiculo[] = veiculosAgrupadosPorHorario[ faixa ];
         //let ponto = this.CoordenadasDosPontos[ pontos[ i ] ];
         let ponto = [ -40.32262, -20.350101 ];
         let distance: Distance = this.SelecionaCoordenadaMaisProxima( ponto, faixaDeHorario );

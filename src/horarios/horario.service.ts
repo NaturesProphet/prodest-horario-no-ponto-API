@@ -79,9 +79,8 @@ export class HorarioService {
 
         //3.1. pra cada faixa de horario, seleciona o registro mais próximo do ponto
         let faixaDeHorario: Veiculo[] = veiculosAgrupadosPorHorario[ faixa ];
-        //let ponto = this.CoordenadasDosPontos[ pontos[ i ] ];
-        let ponto = [ -40.32262, -20.350101 ];
-        let distance: Distance = this.SelecionaCoordenadaMaisProxima( ponto, faixaDeHorario );
+        let pontoCoord = this.CoordenadasDosPontos[ ponto ];
+        let distance: Distance = this.SelecionaCoordenadaMaisProxima( pontoCoord, faixaDeHorario );
         let veiculoMaisPerto = faixaDeHorario[ distance.key ];
 
 

@@ -1,6 +1,6 @@
 {
   "name": "horario-no-ponto-api",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "API que responde o horário onde um õnibus dado esteve mais próximo de um ponto geográfico dado",
   "author": "",
   "license": "MIT",

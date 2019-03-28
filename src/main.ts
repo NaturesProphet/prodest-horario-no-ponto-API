@@ -15,7 +15,7 @@ async function bootstrap () {
       .setTitle( pacote.name )
       .setDescription( pacote.description )
       .setVersion( pacote.version )
-      .addTag( 'API - Production env' )
+      .addTag( 'API' )
       .setSchemes( 'https', 'http' )
       .build();
   } else {
@@ -23,7 +23,7 @@ async function bootstrap () {
       .setTitle( pacote.name )
       .setDescription( pacote.description )
       .setVersion( pacote.version )
-      .addTag( 'API' )
+      .addTag( 'API - Development env' )
       .setSchemes( 'http', 'https' )
       .build();
   }

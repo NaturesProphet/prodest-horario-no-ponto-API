@@ -24,7 +24,7 @@ MONGO_SCHEMA          # Nome do banco no mongo
 
 ## Exemplo de requisição
 ```
-GET /horario
+POST /horario
 {
 	
 "rotulo": "11069",

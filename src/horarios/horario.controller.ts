@@ -1,4 +1,4 @@
-import { Controller, Res, Body, HttpStatus, Get } from '@nestjs/common';
+import { Controller, Res, Body, HttpStatus, Post } from '@nestjs/common';
 import { HorarioService } from './horario.service';
 import { BuscaHorariosDto } from './dto/buscaHorario.dto';
 import { HorarioInterface } from './interfaces/horarios.interface';
@@ -11,7 +11,7 @@ export class HorarioController {
   constructor( private readonly Service: HorarioService ) { }
 
 
-  @Get()
+  @Post()
   @ApiOperation( { title: 'Busca horários onde o veículo em cada ponto' } )
   @ApiResponse( {
     status: 200,

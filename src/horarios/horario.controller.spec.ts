@@ -40,7 +40,7 @@ defineFeature( feature, test => {
         } );
 
         when( 'eu enviar a requisição', async () => {
-            response = await request( app.getHttpServer() ).get( '/horario' ).send( body );
+            response = await request( app.getHttpServer() ).post( '/horario' ).send( body );
         } );
 
         then( 'recebo a lista de horários em que o ônibus X passou mais próximo em cada ponto', () => {
@@ -71,7 +71,7 @@ defineFeature( feature, test => {
         } );
 
         when( 'eu enviar a requisição', async () => {
-            response = await request( app.getHttpServer() ).get( '/horario' ).send( body );
+            response = await request( app.getHttpServer() ).post( '/horario' ).send( body );
         } );
 
         then( /^recebo uma msg de erro com o código (.*) na resposta$/, ( arg0 ) => {
@@ -95,7 +95,7 @@ defineFeature( feature, test => {
         } );
 
         when( 'eu enviar a requisição', async () => {
-            response = await request( app.getHttpServer() ).get( '/horario' ).send( body );
+            response = await request( app.getHttpServer() ).post( '/horario' ).send( body );
         } );
 
         then( /^recebo uma msg de erro com o código (.*) na resposta$/, ( arg0 ) => {

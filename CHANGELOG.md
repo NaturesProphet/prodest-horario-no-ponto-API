@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [0.2.0](https://gitlab.es.gov.br/espm/Transcol-Online/Realtime/horario-no-ponto-API/compare/v0.1.3...v0.2.0) (2019-03-28)
+
+
+### Features
+
+* **HorarioNoPonto:** Encontra horarios que um veiculo passou em uma lista de pontos ([7de1f9f](https://gitlab.es.gov.br/espm/Transcol-Online/Realtime/horario-no-ponto-API/commit/7de1f9f))
+
+
+
 ## [0.1.3](https://gitlab.es.gov.br/espm/Transcol-Online/Realtime/horario-no-ponto-API/compare/v0.1.2...v0.1.3) (2019-03-26)
 
 

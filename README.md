@@ -24,46 +24,32 @@ MONGO_SCHEMA          # Nome do banco no mongo
 
 ## Exemplo de requisição
 ```
-POST /horario
+GET /horario
 {
+	
 "rotulo": "11069",
-"coordenadas": 
-	[
-		{
-			"longitude"	: -40.32262,
-			"latitude": -20.350101
-		},
-		{
-			"longitude"	: -40.3230,
-			"latitude": -20.350101
-		}
-	]
+"pontos": 
+	[ 687, 689]
+	
 }
+
 ```
 
 ## Exemplo de resposta
 ```
 [
     {
-        "coordenadaPesquisada": [
-            -40.32262,
-            -20.350101
-        ],
+        "pontoID": 687,
         "rotulo": "11069",
         "Horarios": [
-            1553469168000,
-            1553469138000
+            1553472082000
         ]
     },
     {
-        "coordenadaPesquisada": [
-            -40.323,
-            -20.350101
-        ],
+        "pontoID": 689,
         "rotulo": "11069",
         "Horarios": [
-            1553469168000,
-            1553469138000
+            1553472082000
         ]
     }
 ]

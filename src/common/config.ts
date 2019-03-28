@@ -6,10 +6,11 @@ const mongoSchema: string = process.env.MONGO_SCHEMA || 'historico';
 const mongoConf: string = '?authSource=admin';
 const DbConnectionToken: string = process.env.DB_CONNECTION_TOKEN || 'DbConnectionToken';
 const pontosUri = process.env.PONTOS_URI || 'https://api.es.gov.br/ceturb/v2/pontos';
+const env = process.env.NODE_ENV || 'development';
 
 
 export {
     mongoHost, mongoPort, mongoPassword,
     mongoUser, mongoSchema, mongoConf,
-    DbConnectionToken, pontosUri
+    DbConnectionToken, pontosUri, env
 }

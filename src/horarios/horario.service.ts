@@ -10,11 +10,14 @@ import { findNearest, Distance } from 'geolib';
 @Injectable()
 export class HorarioService {
 
+  // dicionario estilo hash, com a localizacao dos pontos
   private readonly CoordenadasDosPontos;
 
-  private async CarregaPontos (): Promise<Object> {
+  /**
+   * Este método faz a carga do dicionário de pontos dentro do construtor da classe
+   */
+  private async CarregaPontos () {
     console.log( 'Carregando a lista de pontos' );
-    let dicionario = new Object;
     try {
       const options = {
         uri: pontosUri,
@@ -27,7 +30,7 @@ export class HorarioService {
 
       listaBruta.forEach( ponto => {
         let local = [ ponto.longitude, ponto.latitude ];
-        dicionario[ ponto.id ] = local;
+        this.CoordenadasDosPontos[ Number( ponto.id ) ] = local;
       } );
       console.log( `Lista de pontos carregada. Pontos disponíveis: ${listaBruta.length}` );
     } catch ( erro ) {
@@ -35,17 +38,12 @@ export class HorarioService {
       console.log( 'O programa sairá' );
       process.exit( 1 );
     }
-    return dicionario;
   }
 
   constructor( @Inject( 'VEICULO_MODEL' ) private readonly Model: Model<Veiculo> ) {
-    this.CoordenadasDosPontos = this.CarregaPontos();
+    this.CoordenadasDosPontos = new Object();
+    this.CarregaPontos();
   }
-
-
-
-
-
 
 
 
@@ -54,26 +52,47 @@ export class HorarioService {
    * @param rotulo numero do veículo
    * @param pontos array de numeros ID dos pontos. ( IDs da Geocontrol )
    */
-  async getListaDeHorarios ( rotulo: string, pontos: number[] ) {
+  public async getListaDeHorarios ( rotulo: string, pontos: number[] ) {
+
     let horarios: HorarioInterface[] = new Array();
 
-    // usar após agrupar
-    // for ( let i = 0; i < pontos.length; i++ ) {
-    //   let registros = await this.ExecuteQuery( rotulo, pontos[ i ] );
-    //   let pontoGeograficoCentral = this.CoordenadasDosPontos[ pontos[ i ] ];
-    //   let local: Distance = this.SelecionaCoordenadaMaisProxima( pontoGeograficoCentral, registros );
-    //   let indice: number = Number( local.key );
-    //   let distancia = local.distance;
+    // laço 1. Recebe e agrupa os registros por faixa de horario em cada ponto
+    for ( let i = 0; i < pontos.length; i++ ) {
 
-    //   let veiculo: Veiculo = {
-    //     DATAHORA: registros[ indice ].DATAHORA,
-    //     DISTANCIA: distancia,
-    //     LOCALIZACAO: registros[ indice ].LOCALIZACAO,
-    //     ROTULO: rotulo
-    //   }
-    // }
+      // 1. recebe os horarios em que o veiculo esteve próximo ao ponto
+      let veiculosDesagrupados: Veiculo[] = await this.ExecuteQuery( rotulo, pontos[ i ] );
+
+      // 2. agrupa os registros em grupos separados por um intervalo de 10 minutos
+      let veiculosAgrupadosPorHorario: Veiculo[][] =
+        this.agrupaPorFaixaDeHorario( veiculosDesagrupados );
 
 
+      // 3. SUB-laço. seleciona os horarios por proximidade e popula o cabeçalho da resposta
+      let horario: HorarioInterface = {
+        pontoID: pontos[ i ],
+        rotulo: rotulo,
+        Horarios: new Array()
+      }
+      for ( let y = 0; y < veiculosAgrupadosPorHorario.length; y++ ) {
+
+        //3.1. pra cada faixa de horario, seleciona o registro mais próximo do ponto
+        let faixaDeHorario: Veiculo[] = veiculosAgrupadosPorHorario[ y ];
+        //let ponto = this.CoordenadasDosPontos[ pontos[ i ] ];
+        let ponto = [ -40.32262, -20.350101 ];
+        let distance: Distance = this.SelecionaCoordenadaMaisProxima( ponto, faixaDeHorario );
+        let veiculoMaisPerto = faixaDeHorario[ distance.key ];
+
+
+        //3.2. pra cada um dos registros mais próximos, adiciona seu horario na lista
+        horario.Horarios.push( veiculoMaisPerto.DATAHORA );
+
+      }
+      // fim de iteração. adiciona a lista gerada no array de horarios que será entregue ao usuario
+      horarios.push( horario );
+    }
+
+    //fim do método, retorna a lista de horarios
+    return horarios;
 
   }
 
@@ -90,39 +109,39 @@ export class HorarioService {
    * @returns Veiculo[] 
    */
   private async ExecuteQuery ( rotulo: string, ponto: number ): Promise<Veiculo[]> {
-    // DESMOCKAR APÓS OS TESTES
-    // DESMOCKAR APÓS OS TESTES
-    // DESMOCKAR APÓS OS TESTES
-    rotulo = '11069';
-    let arrayDeCoordenadasLongLat = [ -40.32262, -20.350101 ];
-    //let arrayDeCoordenadasLongLat = this.CoordenadasDosPontos[ ponto ];
-    // DESMOCKAR APÓS OS TESTES
-    // DESMOCKAR APÓS OS TESTES
-    // DESMOCKAR APÓS OS TESTES
 
-    return await this.Model.find(
-      {
-        ROTULO: rotulo,
-        LOCALIZACAO:
-        {
-          $near:
+    let arrayDeCoordenadasLongLat = this.CoordenadasDosPontos[ ponto ];
+    if ( arrayDeCoordenadasLongLat != undefined ) {
+      try {
+        return await this.Model.find(
           {
-            $geometry: { type: "Point", coordinates: arrayDeCoordenadasLongLat },
-            $minDistance: 0,
-            $maxDistance: 50
+            ROTULO: rotulo,
+            LOCALIZACAO:
+            {
+              $near:
+              {
+                $geometry: { type: "Point", coordinates: arrayDeCoordenadasLongLat },
+                $minDistance: 0,
+                $maxDistance: 25
+              }
+            }
+          },
+          {
+            DATAHORA: 1,
+            _id: 0,
+            LOCALIZACAO: 1
           }
-        }
-      },
-      {
-        DATAHORA: 1,
-        _id: 0,
-        LOCALIZACAO: 1
+        ).exec();
+      } catch ( erro ) {
+        throw new Error( `Erro ao buscar no mongo: ${erro.message}` );
       }
-    ).exec();
+    } else {
+      let falha: Error = new Error( `Ponto ${ponto} não encontrado` );
+      falha.stack = 'ponto_invalido';
+      throw falha;
+    }
+
   }
-
-
-
 
 
 
@@ -172,6 +191,7 @@ export class HorarioService {
     let CoordenadasLatLongEquivalentes = [];
 
     for ( let indiceLista = 0; indiceLista < lista.length; indiceLista++ ) {
+
       let latlng = {
         latitude: lista[ indiceLista ].LOCALIZACAO[ 1 ],
         longitude: lista[ indiceLista ].LOCALIZACAO[ 0 ]
@@ -179,9 +199,43 @@ export class HorarioService {
       CoordenadasLatLongEquivalentes.push( latlng );
     }
 
-    let Indice: Distance = findNearest( centro, CoordenadasLatLongEquivalentes )[ 0 ];
-    return Indice;
+    let objetoDistanciaInfo = findNearest( centro, CoordenadasLatLongEquivalentes );
+    let distanceInfo: Distance = JSON.parse( JSON.stringify( objetoDistanciaInfo ) );
+    return distanceInfo;
   }
+
+
+
+
+
+
+
+
+
+
+  /**
+   * Este método agrupa um array de Veiculo em sub-arrays agrupados por faixa de horario 
+   * @param veiculosDesagrupados Array bruto de Veiculo 
+   * @returns lista de arrays (Matriz), cada índice é uma faixa de horario.
+   */
+  private agrupaPorFaixaDeHorario ( veiculosDesagrupados: Veiculo[] ): Veiculo[][] {
+    // referência: https://www.npmjs.com/package/array-groups
+
+    let horariosArray: number[] = new Array();
+
+    for ( let veiculo = 0; veiculo < veiculosDesagrupados.length; veiculo++ ) {
+      horariosArray.push( veiculosDesagrupados[ veiculo ].DATAHORA );
+    }
+
+    // 600000 milisegundos, ou 10 minutos. agrupa por esse intervalo
+    return agrupador.GroupArray( veiculosDesagrupados, horariosArray, 600000 );
+  }
+
+
+
+
+
+
 
 
 }

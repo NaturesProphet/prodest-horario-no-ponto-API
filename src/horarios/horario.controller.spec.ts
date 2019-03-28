@@ -3,10 +3,11 @@ import { Test, TestingModule } from "@nestjs/testing";
 import * as request from 'supertest';
 import { INestApplication } from "@nestjs/common";
 import { AppModule } from "../app.module";
-import { LocalDto } from "./dto/local.dto";
+import { BuscaHorariosDto } from "./dto/buscaHorario.dto";
 
-jest.mock( "./horario.module" );
 jest.mock( "./horario.service" );
+jest.mock( "./horario.module" );
+
 
 const feature = loadFeature( "./test/features/horario.feature" );
 
@@ -22,82 +23,86 @@ defineFeature( feature, test => {
         await app.init();
     } );
 
-    test( '1: O usuário consulta o horario em que um ônibus passou mais perto de um ponto geográfico', ( { given, and, when, then } ) => {
-        let endpoint: string;
-        let rotulo: string;
-        let coordenadas: LocalDto[];
-        let response: any;
-        let body: any;
 
 
-        given( 'Quero saber quais horios um onibus X passou por uma coordenada y', () => {
-            endpoint = '/horario';
+    test( '1: O usuário consulta os horarios em que um ônibus passou mais perto de um ponto', ( { given, and, when, then } ) => {
+        let body: BuscaHorariosDto;
+        let response;
+        given( 'Quero saber quais horários um onibus X passou por cada ponto de uma lista de pontos que darei', () => {
+
         } );
 
-        and( 'enviei um rotulo e um array de pontos geográficos válido', () => {
+        and( 'enviei um rotulo e um array de IDs de ponto válidos', () => {
             body = {
-                rotulo: "11069",
-                coordenadas:
-                    [
-                        {
-                            longitude: -40.32262,
-                            latitude: -20.350101
-                        },
-                        {
-                            longitude: -40.3230,
-                            latitude: -20.350101
-                        }
-                    ]
+                pontos: [ 687, 689 ],
+                rotulo: '11069'
             }
         } );
 
         when( 'eu enviar a requisição', async () => {
-            response = await request( app.getHttpServer() ).post( endpoint ).send( body );
+            response = await request( app.getHttpServer() ).get( '/horario' ).send( body );
         } );
 
-        then( 'recebo a lista de horários em que o ônibus X passou mais próximo em cada coordenada', () => {
-            expect( response.status ).toBe( 200 );
-            expect( response.body ).toEqual( [ { "Horarios": [ 1553469168000, 1553476038000 ], "coordenadaPesquisada": [ -40.32262, -20.350101 ], "rotulo": "11069" }, { "Horarios": [ 1553469168000, 1553476038000 ], "coordenadaPesquisada": [ -40.323, -20.350101 ], "rotulo": "11069" } ] );
+        then( 'recebo a lista de horários em que o ônibus X passou mais próximo em cada ponto', () => {
+            expect( response.body ).toEqual(
+                [
+                    {
+                        "Horarios": [ 1553472082000 ],
+                        "pontoID": 687, "rotulo": "11069"
+                    },
+                    {
+                        "Horarios": [ 1553472082000 ],
+                        "pontoID": 689, "rotulo": "11069"
+                    }
+                ] );
         } );
     } );
 
-    test( '2: O usuário tenta consultar o horario em que um ônibus passou mais perto de um ponto geográfico', ( { given, and, when, then } ) => {
-        let endpoint: string;
-        let rotulo: string;
-        let coordenadas: LocalDto[];
-        let response: any;
-        let body: any;
 
+    test( '2: O usuário TENTA consultar os horarios em que um ônibus passou mais perto de um ponto', ( { given, and, when, then } ) => {
+        let body: BuscaHorariosDto;
+        let response;
+        given( 'Quero saber quais horários um onibus X passou por cada ponto de uma lista de pontos que darei', () => {
 
-        given( 'Quero saber quais horios um onibus X passou por uma coordenada y', () => {
-            endpoint = '/horario';
         } );
 
-        and( 'enviei um rotulo e um array de pontos geográficos inválidos', () => {
-            body = {
-                rotulo: "",
-                coordenadas:
-                    [
-                        {
-                            longitude: -40.32262,
-                            latitude: -20.350101
-                        },
-                        {
-                            longitude: -40.3230,
-                            latitude: -20.350101
-                        }
-                    ]
-            }
+        and( "nao enviei um rotulo ou um array de IDs ou ambos", () => {
+            body = undefined;
         } );
 
         when( 'eu enviar a requisição', async () => {
-            response = await request( app.getHttpServer() ).post( endpoint ).send( body );
+            response = await request( app.getHttpServer() ).get( '/horario' ).send( body );
         } );
 
-        then( "recebo uma mensagem de erro com codigo 400", () => {
+        then( /^recebo uma msg de erro com o código (.*) na resposta$/, ( arg0 ) => {
             expect( response.status ).toBe( 400 );
         } );
     } );
+
+
+    test( '3: O usuário TENTA consultar os horarios em que um ônibus passou mais perto de um ponto', ( { given, and, when, then } ) => {
+        let body: BuscaHorariosDto;
+        let response;
+        given( 'Quero saber quais horários um onibus X passou por cada ponto de uma lista de pontos que darei', () => {
+
+        } );
+
+        and( 'enviei um id de ponto inexistente dentro da lista de pontos', () => {
+            body = {
+                pontos: [ 687, 0 ],
+                rotulo: '11069'
+            }
+        } );
+
+        when( 'eu enviar a requisição', async () => {
+            response = await request( app.getHttpServer() ).get( '/horario' ).send( body );
+        } );
+
+        then( /^recebo uma msg de erro com o código (.*) na resposta$/, ( arg0 ) => {
+            expect( response.status ).toBe( 400 );
+        } );
+    } );
+
 
     afterAll( async () => {
         await app.close();

@@ -1,24 +1,38 @@
-import { Controller, Res, Post, Body, HttpStatus } from '@nestjs/common';
+import { Controller, Res, Body, HttpStatus, Get } from '@nestjs/common';
 import { HorarioService } from './horario.service';
 import { BuscaHorariosDto } from './dto/buscaHorario.dto';
 import { HorarioInterface } from './interfaces/horarios.interface';
+import { ApiUseTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 
-
+@ApiUseTags( 'Horários' )
 @Controller( 'horario' )
 export class HorarioController {
   constructor( private readonly Service: HorarioService ) { }
 
 
-  @Post()
+  @Get()
+  @ApiOperation( { title: 'Busca horários onde o veículo em cada ponto' } )
+  @ApiResponse( {
+    status: 200,
+    description: 'Query executada sem erros',
+  } )
+  @ApiResponse( {
+    status: 400,
+    description: 'Os dados enviados não são válidos',
+  } )
   async ConsultaHorariosPorPonto ( @Body() query: BuscaHorariosDto, @Res() res ) {
     if ( query.rotulo && query.pontos ) {
       try {
-        let horarios: any[] = await this.Service
+        let horarios: HorarioInterface[] = await this.Service
           .getListaDeHorarios( query.rotulo, query.pontos );
         res.status( HttpStatus.OK ).send( horarios );
-      } catch ( e ) {
-        res.status( HttpStatus.BAD_GATEWAY ).send( e.message );
+      } catch ( reqError ) {
+        if ( reqError.message.match( /^Ponto (.*) não encontrado$/ ) ) { // expressão regular! yayy!
+          res.status( HttpStatus.BAD_REQUEST ).send( reqError.message );
+        } else {
+          res.status( HttpStatus.BAD_GATEWAY ).send( reqError.message );
+        }
       }
     }
     else {

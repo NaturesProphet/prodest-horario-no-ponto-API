@@ -5,6 +5,6 @@ export class BuscaHorariosDto {
     @ApiModelProperty()
     rotulo: string;
 
-    @ApiModelProperty()
+    @ApiModelProperty( { type: Array( Number ) } )
     pontos: number[];
 }

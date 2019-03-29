@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.4](https://gitlab.es.gov.br/espm/Transcol-Online/Realtime/horario-no-ponto-API/compare/v0.2.3...v0.2.4) (2019-03-29)
+
+
+### Bug Fixes
+
+* **getListaDeHorarios:** correção de um indíce na chamada de uma função ([890f91b](https://gitlab.es.gov.br/espm/Transcol-Online/Realtime/horario-no-ponto-API/commit/890f91b))
+
+
+
 ## [0.2.3](https://gitlab.es.gov.br/espm/Transcol-Online/Realtime/horario-no-ponto-API/compare/v0.2.2...v0.2.3) (2019-03-28)
 
 

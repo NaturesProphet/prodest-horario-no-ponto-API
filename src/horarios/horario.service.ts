@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Veiculo } from './interfaces/veiculo.interface';
-import { pontosUri } from '../common/config';
+import { pontosUri, raio } from '../common/config';
 const agrupador = require( 'array-groups' );
 import * as request from 'request-promise';
 import { HorarioInterface } from './interfaces/horarios.interface';
@@ -123,7 +123,7 @@ export class HorarioService {
               {
                 $geometry: { type: "Point", coordinates: arrayDeCoordenadasLongLat },
                 $minDistance: 0,
-                $maxDistance: 25
+                $maxDistance: raio
               }
             }
           },
